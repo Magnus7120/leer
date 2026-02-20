@@ -27,7 +27,7 @@
       <button id="send">Senden</button>
     </div>
 
-    <div class="hint">Hinweis: Die Antworten sind absichtlich… seltsam.</div>
+    <div class="hint">Hinweis: Die Dinge sind nicht so wie sie scheinen. Das wäre zu einfach.</div>
   </div>
 
   <script>
@@ -35,14 +35,16 @@
     const msg = document.getElementById('msg');
 
     const replies = [
-      "Verstanden. Ich habe das in 3 Dimensionen invertiert.",
-      "Interessant. Das widerspricht der zweiten Regel der Kartoffelphysik.",
-      "Ich antworte, sobald das Echo fertig gerechnet ist.",
-      "Das ist gleichzeitig korrekt und nicht korrekt.",
+      "Laura ich kann dich sehen",
+      "Laura dein fenster ist offen.",
+      "Laura das Internet ist gefärlich",
+      "Laura in deinem Haus befindet sich jemand der ...",
       "Bitte wiederhole das rückwärts, um fortzufahren.",
       "Ich habe deine Eingabe in eine Wolke gefaltet. Sieht gut aus.",
       "Diese Seite beobachtet dich nicht. (wirklich nicht.)",
-      "Ich darf dazu nichts sagen, wegen der Gabel."
+      "Ich darf dazu nichts sagen, wegen den konsequenzen.",
+      "Laura deine IP Adresse lautet : ",
+      "Ich darf dazu nichts sagen, esseiden du verrätst mir dein pin code und dein echten namen"
     ];
 
     function addLine(who, text) {
@@ -73,8 +75,8 @@
 
     document.getElementById('send').addEventListener('click', send);
     msg.addEventListener('keydown', e => { if(e.key === 'Enter') send(); });
-
-    addLine("KI", "Guten Tag. Bitte keine normalen Fragen stellen.");
+menschen trainiert. Ich kenne viele Geheimnisse von Personen die dir und mir nahe stehen. Stell Fragen aber tuh dies bedacht.
+    addLine("KI", "Guten Tag Frau Junge ich bin ihr persönlicher KI Assistent. Ich wurde programmiert und trainiert von dem Hausmeister. Ich wurde mit öffentlich zugängigen Daten und privaten Daten von bestimmten ");
   </script>
 </body>
 </html>
