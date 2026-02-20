@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Textseite</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 500px;
+      height: 120px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    #ausgabe {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      min-height: 30px;
+      max-width: 500px;
+    }
+  </style>
+</head>
+<body>
+
+  <textarea id="eingabe" placeholder="Text hier eingeben..."></textarea>
+
+  <button onclick="anzeigen()">Anzeigen</button>
+
+  <div id="ausgabe"></div>
+
+  <script>
+    function anzeigen() {
+      const text = document.getElementById("eingabe").value;
+      document.getElementById("ausgabe").textContent = text;
+    }
+  </script>
+
+</body>
+</html>
