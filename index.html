@@ -34,17 +34,23 @@
     const log = document.getElementById('log');
     const msg = document.getElementById('msg');
 
+    function fakeIp() {
+      // reine Deko, hat nichts mit echter IP zu tun
+      const a = () => Math.floor(Math.random() * 256);
+      return `${a()}.${a()}.${a()}.${a()}`;
+    }
+
     const replies = [
-      "Laura ich kann dich sehen",
-      "Laura dein fenster ist offen.",
-      "Laura das Internet ist gefärlich",
-      "Laura in deinem Haus befindet sich jemand der ...",
+      "Laura ich kann dich sehen.",
+      "Laura dein Fenster ist offen.",
+      "Laura das Internet ist gefährlich.",
+      "Laura in deinem Haus befindet sich jemand der …",
       "Bitte wiederhole das rückwärts, um fortzufahren.",
       "Ich habe deine Eingabe in eine Wolke gefaltet. Sieht gut aus.",
       "Diese Seite beobachtet dich nicht. (wirklich nicht.)",
-      "Ich darf dazu nichts sagen, wegen den konsequenzen.",
-      "Laura deine IP Adresse lautet : ",
-      "Ich darf dazu nichts sagen, esseiden du verrätst mir dein pin code und dein echten namen"
+      "Ich darf dazu nichts sagen, wegen den Konsequenzen.",
+      () => "Laura deine IP Adresse lautet: " + fakeIp(),
+      "Ich darf dazu nichts sagen, es sei denn du verrätst mir deine PIN und deinen echten Namen."
     ];
 
     function addLine(who, text) {
@@ -56,11 +62,13 @@
     }
 
     function escapeHtml(s){
-      return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
 
     function botReply(userText){
-      const r = replies[Math.floor(Math.random() * replies.length)];
+      let r = replies[Math.floor(Math.random() * replies.length)];
+      if (typeof r === "function") r = r(userText);
+
       const extra = Math.random() < 0.35 ? ` (Checksum: ${Math.floor(Math.random()*9000+1000)})` : "";
       setTimeout(() => addLine("KI", r + extra), 350 + Math.random()*700);
     }
@@ -75,7 +83,9 @@
 
     document.getElementById('send').addEventListener('click', send);
     msg.addEventListener('keydown', e => { if(e.key === 'Enter') send(); });
-    addLine("KI", "Guten Tag Frau Junge ich bin ihr persönlicher KI Assistent. Ich wurde programmiert und trainiert von dem Hausmeister. Ich wurde mit öffentlich zugängigen Daten und privaten Daten von bestimmten menschen trainiert. Ich kenne viele Geheimnisse von Personen die dir und mir nahe stehen. Stell Fragen aber tuh dies bedacht.");
+
+    addLine("KI", "Guten Tag. Ich bin Ihr persönlicher KI-Assistent. Ich wurde mit öffentlich zugänglichen Daten und… (unvollständigen) privaten Fragmenten trainiert.");
+    addLine("KI", "Stell Fragen, aber tu dies bedacht.");
   </script>
 </body>
 </html>
