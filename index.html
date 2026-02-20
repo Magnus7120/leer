@@ -1,50 +1,80 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <title>Textseite</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>…</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 40px;
-    }
-
-    textarea {
-      width: 100%;
-      max-width: 500px;
-      height: 120px;
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    button {
-      padding: 10px 20px;
-      cursor: pointer;
-    }
-
-    #ausgabe {
-      margin-top: 20px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      min-height: 30px;
-      max-width: 500px;
-    }
+    body{font-family:system-ui,Arial,sans-serif;max-width:780px;margin:40px auto;padding:0 16px}
+    .card{border:1px solid #ddd;border-radius:14px;padding:16px}
+    #log{height:340px;overflow:auto;border:1px solid #eee;border-radius:12px;padding:12px;background:#fafafa}
+    .m{margin:10px 0}
+    .u{font-weight:600}
+    .b{font-weight:600}
+    .row{display:flex;gap:10px;margin-top:12px}
+    input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid #ddd}
+    button{padding:10px 14px;border-radius:10px;border:1px solid #ddd;cursor:pointer}
+    .hint{opacity:.7;font-size:.9rem;margin-top:10px}
   </style>
 </head>
 <body>
+  <div class="card">
+    <h1>Interaktive Stilleinheit</h1>
+    <div id="log"></div>
 
-  <textarea id="eingabe" placeholder="Text hier eingeben..."></textarea>
+    <div class="row">
+      <input id="msg" placeholder="Schreib etwas…" autocomplete="off" />
+      <button id="send">Senden</button>
+    </div>
 
-  <button onclick="anzeigen()">Anzeigen</button>
-
-  <div id="ausgabe"></div>
+    <div class="hint">Hinweis: Die Antworten sind absichtlich… seltsam.</div>
+  </div>
 
   <script>
-    function anzeigen() {
-      const text = document.getElementById("eingabe").value;
-      document.getElementById("ausgabe").textContent = text;
-    }
-  </script>
+    const log = document.getElementById('log');
+    const msg = document.getElementById('msg');
 
+    const replies = [
+      "Verstanden. Ich habe das in 3 Dimensionen invertiert.",
+      "Interessant. Das widerspricht der zweiten Regel der Kartoffelphysik.",
+      "Ich antworte, sobald das Echo fertig gerechnet ist.",
+      "Das ist gleichzeitig korrekt und nicht korrekt.",
+      "Bitte wiederhole das rückwärts, um fortzufahren.",
+      "Ich habe deine Eingabe in eine Wolke gefaltet. Sieht gut aus.",
+      "Diese Seite beobachtet dich nicht. (wirklich nicht.)",
+      "Ich darf dazu nichts sagen, wegen der Gabel."
+    ];
+
+    function addLine(who, text) {
+      const div = document.createElement('div');
+      div.className = 'm';
+      div.innerHTML = `<span class="${who === 'Du' ? 'u' : 'b'}">${who}:</span> ${escapeHtml(text)}`;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function escapeHtml(s){
+      return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function botReply(userText){
+      const r = replies[Math.floor(Math.random() * replies.length)];
+      const extra = Math.random() < 0.35 ? ` (Checksum: ${Math.floor(Math.random()*9000+1000)})` : "";
+      setTimeout(() => addLine("KI", r + extra), 350 + Math.random()*700);
+    }
+
+    function send(){
+      const t = msg.value.trim();
+      if(!t) return;
+      msg.value = "";
+      addLine("Du", t);
+      botReply(t);
+    }
+
+    document.getElementById('send').addEventListener('click', send);
+    msg.addEventListener('keydown', e => { if(e.key === 'Enter') send(); });
+
+    addLine("KI", "Guten Tag. Bitte keine normalen Fragen stellen.");
+  </script>
 </body>
 </html>
