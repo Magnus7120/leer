@@ -1,91 +1,191 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>…</title>
-  <style>
-    body{font-family:system-ui,Arial,sans-serif;max-width:780px;margin:40px auto;padding:0 16px}
-    .card{border:1px solid #ddd;border-radius:14px;padding:16px}
-    #log{height:340px;overflow:auto;border:1px solid #eee;border-radius:12px;padding:12px;background:#fafafa}
-    .m{margin:10px 0}
-    .u{font-weight:600}
-    .b{font-weight:600}
-    .row{display:flex;gap:10px;margin-top:12px}
-    input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid #ddd}
-    button{padding:10px 14px;border-radius:10px;border:1px solid #ddd;cursor:pointer}
-    .hint{opacity:.7;font-size:.9rem;margin-top:10px}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Eine kleine Nachricht</title>
+<style>
+  body{
+    font-family:system-ui,Arial,sans-serif;
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#111,#2b124c,#5b1b5f);
+    color:white;
+    padding:18px;
+  }
+  .card{
+    width:100%;
+    max-width:760px;
+    background:rgba(255,255,255,.09);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:24px;
+    padding:22px;
+    box-shadow:0 20px 80px rgba(0,0,0,.35);
+  }
+  h1{font-size:1.55rem;margin:0 0 14px}
+  #log{
+    height:360px;
+    overflow:auto;
+    background:rgba(255,255,255,.08);
+    border-radius:18px;
+    padding:14px;
+  }
+  .m{margin:12px 0;line-height:1.45}
+  .u{font-weight:700;color:#ffd6f5}
+  .b{font-weight:700;color:#b8fff3}
+  .row{display:flex;gap:10px;margin-top:14px}
+  input{
+    flex:1;
+    padding:13px;
+    border-radius:14px;
+    border:0;
+    outline:none;
+    font-size:1rem;
+  }
+  button{
+    padding:13px 18px;
+    border-radius:14px;
+    border:0;
+    cursor:pointer;
+    font-weight:700;
+  }
+  .hint{opacity:.75;font-size:.9rem;margin-top:10px}
+  .heart{
+    position:fixed;
+    animation:float 2.8s linear forwards;
+    pointer-events:none;
+    font-size:24px;
+  }
+  @keyframes float{
+    from{transform:translateY(0);opacity:1}
+    to{transform:translateY(-160px);opacity:0}
+  }
+</style>
 </head>
 <body>
-  <div class="card">
-    <h1>Interaktive Stilleinheit</h1>
-    <div id="log"></div>
+<div class="card">
+  <h1>Ein kleines Experiment für dich ✨</h1>
+  <div id="log"></div>
 
-    <div class="row">
-      <input id="msg" placeholder="Schreib etwas…" autocomplete="off" />
-      <button id="send">Senden</button>
-    </div>
-
-    <div class="hint">Hinweis: Die Dinge sind nicht so wie sie scheinen. Das wäre zu einfach.</div>
+  <div class="row">
+    <input id="msg" placeholder="Schreib etwas …" autocomplete="off" />
+    <button id="send">Senden</button>
   </div>
 
-  <script>
-    const log = document.getElementById('log');
-    const msg = document.getElementById('msg');
+  <div class="hint">Tipp: Schreib mal „Magnus“, „traurig“, „warum“ oder „Geheimnis“.</div>
+</div>
 
-    function fakeIp() {
-      // reine Deko, hat nichts mit echter IP zu tun
-      const a = () => Math.floor(Math.random() * 256);
-      return `${a()}.${a()}.${a()}.${a()}`;
-    }
+<script>
+const log = document.getElementById("log");
+const msg = document.getElementById("msg");
+let count = 0;
 
-    const replies = [
-      "Laura ich kann dich sehen.",
-      "Laura dein Fenster ist offen.",
-      "Laura das Internet ist gefährlich.",
-      "Laura in deinem Haus befindet sich jemand der …",
-      "Bitte wiederhole das rückwärts, um fortzufahren.",
-      "Ich habe deine Eingabe in eine Wolke gefaltet. Sieht gut aus.",
-      "Diese Seite beobachtet dich nicht. (wirklich nicht.)",
-      "Ich darf dazu nichts sagen, wegen den Konsequenzen.",
-      () => "Laura deine IP Adresse lautet: " + fakeIp(),
-      "Ich darf dazu nichts sagen, es sei denn du verrätst mir deine PIN und deinen echten Namen."
-    ];
+const normalReplies = [
+  "Ich bin keine echte KI. Aber ich wurde mit echter Mühe gebaut.",
+  "Manche Menschen sind nicht laut besonders. Sie sind einfach anders.",
+  "Magnus wollte nichts Normales machen. Also hat er diese kleine Seite gebaut.",
+  "Es gibt Dinge, die sagt man nicht perfekt. Aber man kann sie ehrlich sagen.",
+  "Vielleicht ist das hier nur Code. Vielleicht aber auch ein kleiner Mutanfall.",
+  "Du hast gerade mit einer Website geschrieben, die nur existiert, weil jemand an dich gedacht hat.",
+  "Manchmal reicht ein kleiner Link, um zu sagen: Du bist nicht irgendein Mensch."
+];
 
-    function addLine(who, text) {
-      const div = document.createElement('div');
-      div.className = 'm';
-      div.innerHTML = `<span class="${who === 'Du' ? 'u' : 'b'}">${who}:</span> ${escapeHtml(text)}`;
-      log.appendChild(div);
-      log.scrollTop = log.scrollHeight;
-    }
+const special = [
+  {
+    trigger: "magnus",
+    reply: "Magnus tut manchmal so, als wäre alles locker. Aber bei dir war ihm diese Seite wichtig."
+  },
+  {
+    trigger: "traurig",
+    reply: "Dann kurz Pause. Atmen. Du musst heute nicht alles alleine tragen."
+  },
+  {
+    trigger: "warum",
+    reply: "Weil manche Menschen eine schönere Antwort verdienen als nur eine normale Nachricht."
+  },
+  {
+    trigger: "geheimnis",
+    reply: "Geheimnis freigeschaltet: Magnus findet dich wirklich besonders. Nicht bisschen. Wirklich."
+  },
+  {
+    trigger: "liebe",
+    reply: "Gefährliches Wort. Aber schöne Dinge sind manchmal ein bisschen gefährlich."
+  }
+];
 
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    }
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
 
-    function botReply(userText){
-      let r = replies[Math.floor(Math.random() * replies.length)];
-      if (typeof r === "function") r = r(userText);
+function addLine(who,text){
+  const div=document.createElement("div");
+  div.className="m";
+  div.innerHTML=`<span class="${who==="Du"?"u":"b"}">${who}:</span> ${escapeHtml(text)}`;
+  log.appendChild(div);
+  log.scrollTop=log.scrollHeight;
+}
 
-      const extra = Math.random() < 0.35 ? ` (Checksum: ${Math.floor(Math.random()*9000+1000)})` : "";
-      setTimeout(() => addLine("KI", r + extra), 350 + Math.random()*700);
-    }
+function addTypingLine(who,text){
+  const div=document.createElement("div");
+  div.className="m";
+  div.innerHTML=`<span class="b">${who}:</span> <span></span>`;
+  log.appendChild(div);
+  const span=div.querySelector("span:last-child");
+  let i=0;
+  const timer=setInterval(()=>{
+    span.textContent += text[i] || "";
+    i++;
+    log.scrollTop=log.scrollHeight;
+    if(i>=text.length) clearInterval(timer);
+  },24);
+}
 
-    function send(){
-      const t = msg.value.trim();
-      if(!t) return;
-      msg.value = "";
-      addLine("Du", t);
-      botReply(t);
-    }
+function hearts(){
+  for(let i=0;i<12;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.textContent=["❤️","✨","💫","🌙"][Math.floor(Math.random()*4)];
+    h.style.left=Math.random()*100+"vw";
+    h.style.top=70+Math.random()*25+"vh";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),2800);
+  }
+}
 
-    document.getElementById('send').addEventListener('click', send);
-    msg.addEventListener('keydown', e => { if(e.key === 'Enter') send(); });
+function chooseReply(text){
+  const lower=text.toLowerCase();
+  const found=special.find(x=>lower.includes(x.trigger));
+  if(found) return found.reply;
 
-    addLine("KI", "Guten Tag. Ich bin Ihr persönlicher KI-Assistent. Ich wurde mit öffentlich zugänglichen Daten und… (unvollständigen) privaten Fragmenten trainiert.");
-    addLine("KI", "Stell Fragen, aber tu dies bedacht.");
-  </script>
+  if(count===5){
+    hearts();
+    return "Okay, jetzt kommt die ehrliche Nachricht: Diese Seite ist klein, aber der Gedanke dahinter nicht.";
+  }
+
+  return normalReplies[Math.floor(Math.random()*normalReplies.length)];
+}
+
+function send(){
+  const t=msg.value.trim();
+  if(!t) return;
+  count++;
+  msg.value="";
+  addLine("Du",t);
+
+  const reply=chooseReply(t);
+  setTimeout(()=>addTypingLine("KI",reply),450+Math.random()*500);
+}
+
+document.getElementById("send").addEventListener("click",send);
+msg.addEventListener("keydown",e=>{if(e.key==="Enter")send();});
+
+addTypingLine("KI","Hey. Magnus hat mich schnell gebaut, aber nicht ohne Grund. Schreib mir irgendwas.");
+</script>
 </body>
 </html>
